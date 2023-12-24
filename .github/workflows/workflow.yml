@@ -50,6 +50,6 @@ jobs:
           sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/" $pkgJson
 
           ls -ltra .
-          cat pkgJson
+          cat $pkgJson
 
           npm publish
