@@ -8,7 +8,7 @@ import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult } from
  * and rehydrate the state upon page load.
  *
  * @param key the key under which the state should be saved into `Storage`
- * @param storage the implementation
+ * @param storage an implementation of the `Storage` interface, like: `sessionStorage` or `localStorage`
  *
  * @example
  *  export const CounterStore = signalStore(
