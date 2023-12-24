@@ -7,19 +7,16 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
 
 export const CounterStore = signalStore(
   withState({
-    count: 10,
-    count2: 100,
-    nested: {
-      myval: 500
-    }
+    count: 100,
+    date: new Date()
   }),
   withStorage('state', sessionStorage),
   withMethods(({ count, ...store }) => ({
+    setDate(date: Date) {
+      patchState(store, { date })
+    },
     increment(by: number) {
       patchState(store, { count: count() + by })
-    },
-    decrement(by: number) {
-      patchState(store, { count: count() - by })
     }
   }))
 )
@@ -37,7 +34,5 @@ export class AppComponent {
 
   constructor() {
     setTimeout(() => this.store.increment(100), 3000)
-    // setTimeout(() => this.store.increment(100), 4000)
-    // setTimeout(() => this.store.increment(100), 6000)
   }
 }

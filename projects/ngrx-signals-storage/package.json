@@ -1,10 +1,36 @@
 {
-  "name": "ngrx-signals-storage",
+  "name": "@larscom/ngrx-signals-storage",
   "version": "0.0.0",
+  "description": "Save signal state (@ngrx/signals) to localstorage/sessionstorage and restore the state on page load.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larscom/ngrx-signals-storage.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "angular",
+    "ngrx",
+    "redux",
+    "store",
+    "state",
+    "signals",
+    "storage",
+    "localstorage",
+    "sessionstorage",
+    "reactive"
+  ],
+  "author": "Lars Kniep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larscom/ngrx-signals-storage/issues"
+  },
+  "homepage": "https://github.com/larscom/ngrx-signals-storage#readme",
   "peerDependencies": {
     "@angular/common": "^17.0.0",
     "@angular/core": "^17.0.0",
-    "@ngrx/signals" : "^17.0.0"
+    "@ngrx/signals": "^17.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

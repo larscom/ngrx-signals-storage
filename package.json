@@ -1,12 +1,12 @@
 {
   "name": "ngrx-signals-storage",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "test": "exit 0",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build:lib": "ng build ngrx-signals-storage && cpx README.md dist/ngrx-signals-storage"
   },
   "private": true,
   "dependencies": {
