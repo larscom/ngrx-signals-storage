@@ -2,6 +2,7 @@ import { effect } from '@angular/core'
 
 import { getState, patchState } from '@ngrx/signals'
 import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult } from '@ngrx/signals/src/signal-store-models'
+import { Config, defaultConfig } from './config'
 
 /**
  * The `withStorage` function that lets you save the state to localstorage/sessionstorage
@@ -23,10 +24,13 @@ import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult } from
  */
 export function withStorage<State extends SignalStoreFeatureResult>(
   key: string,
-  storage: Storage
+  storage: Storage,
+  config?: Partial<Config<State['state']>>
 ): SignalStoreFeature<State, EmptyFeatureResult> {
-  const item = storage.getItem(key)
-  const storageState: State['state'] | null = item ? JSON.parse(item) : null
+  const cfg = { ...defaultConfig, ...config }
+
+  const item = getFromStorage(key, storage, cfg)
+  const storageState: State['state'] | null = item ? cfg.deserialize(item) : null
 
   let hydrated = false
 
@@ -52,9 +56,24 @@ export function withStorage<State extends SignalStoreFeatureResult>(
 
     effect(() => {
       const state = getState(store)
-      storage.setItem(key, JSON.stringify(state))
+      try {
+        if (cfg.shouldSave(state)) {
+          storage.setItem(key, cfg.serialize(state))
+        }
+      } catch (e) {
+        cfg.error(e)
+      }
     })
 
     return store
+  }
+}
+
+function getFromStorage<T>(key: string, storage: Storage, cfg: Config<T>): string | null {
+  try {
+    return storage.getItem(key)
+  } catch (e) {
+    cfg.error(e)
+    return null
   }
 }

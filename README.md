@@ -16,10 +16,6 @@ npm install @larscom/ngrx-signals-storage
 
 `@larscom/ngrx-signals-storage` depends on [@ngrx/signals](https://ngrx.io/guide/signals/install) and [Angular](https://github.com/angular/angular)
 
-```bash
-   npm install @ngrx/signals
-```
-
 ## Usage
 
 Import `withStorage` function
@@ -33,6 +29,37 @@ export const CounterStore = signalStore(
     count: 0
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
-  withStorage('myKey', sessionStorage)
+  // extra config can be passed as 3th argument
+  withStorage('myKey', sessionStorage, { error: (error: any) => console.error(error) })
 )
+```
+
+## Configuration
+
+```ts
+export interface Config<T> {
+  /**
+   * Function that gets executed on a storage error (get/set)
+   * @param error the error that occurred
+   */
+  error: (error: any) => void
+
+  /**
+   * Serializer for the state, by default it uses `JSON.stringify()`
+   * @param state the last state known before it gets saved to storage
+   */
+  serialize: (state: T) => string
+
+  /**
+   * Deserializer for the state, by default it uses `JSON.parse()`
+   * @param state the last state known from the storage location
+   */
+  deserialize: (state: string) => T
+
+  /**
+   * Save to storage will only occur when this function returns true
+   * @param state the last state known before it gets saved to storage
+   */
+  shouldSave: (state: T) => boolean
+}
 ```
