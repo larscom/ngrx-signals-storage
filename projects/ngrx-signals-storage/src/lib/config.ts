@@ -25,7 +25,7 @@ export interface Config<T> {
 }
 
 export const defaultConfig: Config<any> = {
-  error: (error: any) => {},
+  error: (error: any) => console.error(error),
 
   serialize: (state: any) => JSON.stringify(state),
 
