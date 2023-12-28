@@ -50,7 +50,6 @@ jobs:
           cd dist/ngrx-signals-storage
 
           version=${{ github.ref_name }}
-          pkgJson="./package.json"
-          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/" $pkgJson
+          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/" ./package.json
 
           npm publish

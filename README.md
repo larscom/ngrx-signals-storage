@@ -3,6 +3,7 @@
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngrx-signals-storage.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngrx-signals-storage)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-signals-storage)
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-signals-storage.svg)](https://github.com/larscom/ngrx-signals-storage/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/larscom/ngrx-signals-storage/graph/badge.svg?token=AhO0viaKOA)](https://codecov.io/gh/larscom/ngrx-signals-storage)
 
 > Save signal state (@ngrx/signals) to localStorage/sessionStorage and restore the state on page load.
 
@@ -30,7 +31,7 @@ export const CounterStore = signalStore(
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
   // extra config can be passed as 3th argument
-  withStorage('myKey', sessionStorage, { error: (error: any) => console.error(error) })
+  withStorage('myKey', sessionStorage, { shouldSave: ({ count }) => count > 0 })
 )
 ```
 
