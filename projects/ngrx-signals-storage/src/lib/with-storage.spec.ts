@@ -219,6 +219,56 @@ describe('withStorage', () => {
 
     expect(deserialize).toHaveBeenCalledWith(JSON.stringify({ count: 100 }))
   })
+
+  it('should call provided error func on getItem', () => {
+    const storage = new TestStorage()
+
+    jest.spyOn(storage, 'getItem').mockImplementation(() => {
+      throw Error('storage error')
+    })
+
+    const error = jest.fn()
+    const TestStore = signalStore(
+      withState({
+        count: 0
+      }),
+      withStorage(storageKey, storage, { error })
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    expect(error).toHaveBeenCalledWith(Error('storage error'))
+  })
+
+  it('should call provided error func on setItem', () => {
+    const storage = new TestStorage()
+
+    jest.spyOn(storage, 'setItem').mockImplementation(() => {
+      throw Error('storage error')
+    })
+
+    const error = jest.fn()
+    const TestStore = signalStore(
+      withState({
+        count: 0
+      }),
+      withStorage(storageKey, storage, { error })
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.count()).toBe(0)
+
+    // trigger effect()
+    TestBed.flushEffects()
+
+    expect(error).toHaveBeenCalledWith(Error('storage error'))
+  })
 })
 
 class TestStorage implements Storage {
