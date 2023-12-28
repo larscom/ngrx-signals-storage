@@ -24,6 +24,10 @@ jobs:
       - run: |
           npm ci --ignore-scripts --legacy-peer-deps
           npm run test
+      - uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/coverage-final.json
 
   publish:
     if: startsWith(github.ref, 'refs/tags/')
@@ -41,7 +45,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - run: |
           npm ci --ignore-scripts --legacy-peer-deps
-          npm run build:lib
+          npm run build
       - run: |
           cd dist/ngrx-signals-storage
 

@@ -4,9 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "test": "exit 0",
-    "build": "ng build",
-    "build:lib": "ng build ngrx-signals-storage && cpx README.md dist/ngrx-signals-storage"
+    "test": "ng test ngrx-signals-storage",
+    "build": "ng build ngrx-signals-storage && cpx README.md dist/ngrx-signals-storage"
   },
   "private": true,
   "dependencies": {
@@ -24,17 +23,13 @@
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
+    "@angular-builders/jest": "^17.0.0",
     "@angular-devkit/build-angular": "^17.0.8",
     "@angular/cli": "^17.0.8",
     "@angular/compiler-cli": "^17.0.0",
     "@larscom/cpx": "^2.1.0",
-    "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.1.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "@types/jest": "^29.5.11",
+    "jest": "^29.7.0",
     "ng-packagr": "^17.0.0",
     "typescript": "~5.2.2"
   }
