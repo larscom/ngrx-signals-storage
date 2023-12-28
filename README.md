@@ -30,8 +30,8 @@ export const CounterStore = signalStore(
     count: 0
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
-  // extra config can be passed as 3th argument
-  withStorage('myKey', sessionStorage, { shouldSave: ({ count }) => count > 0 })
+  // optional config can be passed as 3th argument
+  withStorage('myKey', sessionStorage, { saveIf: ({ count }) => count > 0 })
 )
 ```
 
@@ -61,6 +61,6 @@ export interface Config<T> {
    * Save to storage will only occur when this function returns true
    * @param state the last state known before it gets saved to storage
    */
-  shouldSave: (state: T) => boolean
+  saveIf: (state: T) => boolean
 }
 ```

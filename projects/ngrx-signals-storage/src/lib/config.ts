@@ -21,7 +21,7 @@ export interface Config<T> {
    * Save to storage will only occur when this function returns true
    * @param state the last state known before it gets saved to storage
    */
-  shouldSave: (state: T) => boolean
+  saveIf: (state: T) => boolean
 }
 
 export const defaultConfig: Config<any> = {
@@ -31,5 +31,5 @@ export const defaultConfig: Config<any> = {
 
   deserialize: (state: string) => JSON.parse(state),
 
-  shouldSave: (state: any) => true
+  saveIf: (state: any) => true
 }

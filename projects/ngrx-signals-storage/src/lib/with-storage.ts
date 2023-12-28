@@ -57,7 +57,7 @@ export function withStorage<State extends SignalStoreFeatureResult>(
     effect(() => {
       const state = getState(store)
       try {
-        if (cfg.shouldSave(state)) {
+        if (cfg.saveIf(state)) {
           storage.setItem(key, cfg.serialize(state))
         }
       } catch (e) {

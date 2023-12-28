@@ -154,14 +154,14 @@ describe('withStorage', () => {
     expect(() => TestBed.inject(TestStore)).toThrow("'withStorage' must be after 'withState'")
   })
 
-  it('should not save to storage when shouldSave returns false', () => {
+  it('should not save to storage when saveIf returns false', () => {
     const storage = new TestStorage()
 
     const TestStore = signalStore(
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { shouldSave: ({ count }) => count > 0 })
+      withStorage(storageKey, storage, { saveIf: ({ count }) => count > 0 })
     )
 
     TestBed.configureTestingModule({
