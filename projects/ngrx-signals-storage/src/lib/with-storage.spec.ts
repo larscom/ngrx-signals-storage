@@ -176,6 +176,49 @@ describe('withStorage', () => {
 
     expect(storage.length).toEqual(0)
   })
+
+  it('should call provided serialize func', () => {
+    const storage = new TestStorage()
+
+    const serialize = jest.fn()
+    const TestStore = signalStore(
+      withState({
+        count: 0
+      }),
+      withStorage(storageKey, storage, { serialize })
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.count()).toBe(0)
+
+    // trigger effect()
+    TestBed.flushEffects()
+
+    expect(serialize).toHaveBeenCalledWith({ count: 0 })
+  })
+
+  it('should call provided deserialize func', () => {
+    const storage = new TestStorage()
+    storage.setItem(storageKey, JSON.stringify({ count: 100 }))
+
+    const deserialize = jest.fn()
+    const TestStore = signalStore(
+      withState({
+        count: 0
+      }),
+      withStorage(storageKey, storage, { deserialize })
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    expect(deserialize).toHaveBeenCalledWith(JSON.stringify({ count: 100 }))
+  })
 })
 
 class TestStorage implements Storage {
