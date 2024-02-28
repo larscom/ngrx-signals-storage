@@ -8,9 +8,10 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
 export const CounterStore = signalStore(
   withState({
     count: 100,
+    test: 5,
     date: new Date()
   }),
-  withStorage('state', sessionStorage),
+  withStorage('state', sessionStorage, { excludeKeys: ['test'] }),
   withMethods(({ count, ...store }) => ({
     setDate(date: Date) {
       patchState(store, { date })

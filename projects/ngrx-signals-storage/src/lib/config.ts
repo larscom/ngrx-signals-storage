@@ -22,6 +22,11 @@ export interface Config<T> {
    * @param state the last state known before it gets saved to storage
    */
   saveIf: (state: T) => boolean
+
+  /**
+   * These keys will not get saved to storage
+   */
+  excludeKeys: Array<keyof T>
 }
 
 export const defaultConfig: Config<any> = {
@@ -31,5 +36,7 @@ export const defaultConfig: Config<any> = {
 
   deserialize: (state: string) => JSON.parse(state),
 
-  saveIf: (state: any) => true
+  saveIf: (state: any) => true,
+
+  excludeKeys: []
 }

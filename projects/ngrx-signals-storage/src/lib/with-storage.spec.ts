@@ -269,6 +269,34 @@ describe('withStorage', () => {
 
     expect(error).toHaveBeenCalledWith(Error('storage error'))
   })
+
+  it('should exclude keys from state when saving to storage', () => {
+    const storage = new TestStorage()
+
+    const TestStore = signalStore(
+      withState({
+        count: 100,
+        excludeMe: 1,
+        skipMe: 'test'
+      }),
+      withStorage(storageKey, storage, { excludeKeys: ['excludeMe', 'skipMe'] })
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.count()).toBe(100)
+    expect(store.excludeMe()).toBe(1)
+    expect(store.skipMe()).toBe('test')
+
+    // trigger effect()
+    TestBed.flushEffects()
+
+    expect(storage.length).toEqual(1)
+    expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({ count: 100 })
+  })
 })
 
 class TestStorage implements Storage {

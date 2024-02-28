@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "test": "ng test ngrx-signals-storage",
+    "test:watch": "ng test ngrx-signals-storage --watch",
     "build": "ng build ngrx-signals-storage && cpx README.md dist/ngrx-signals-storage"
   },
   "private": true,
