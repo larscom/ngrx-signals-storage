@@ -9,9 +9,20 @@ export const CounterStore = signalStore(
   withState({
     count: 100,
     test: 5,
-    date: new Date()
+    date: new Date(),
+    unique: new Set([1, 1, 3, 3])
   }),
-  withStorage('state', sessionStorage, { excludeKeys: ['test'] }),
+  withStorage('state', sessionStorage, {
+    excludeKeys: ['test'],
+    serialize: (state) => JSON.stringify({ ...state, unique: Array.from(state.unique) }),
+    deserialize: (stateString) => {
+      const state = JSON.parse(stateString)
+      return {
+        ...state,
+        unique: new Set(state.unique)
+      }
+    }
+  }),
   withMethods(({ count, ...store }) => ({
     setDate(date: Date) {
       patchState(store, { date })
@@ -35,5 +46,9 @@ export class AppComponent {
 
   constructor() {
     setTimeout(() => this.store.increment(100), 3000)
+  }
+
+  get uniqueNumbers() {
+    return Array.from(this.store.unique())
   }
 }

@@ -1,9 +1,8 @@
 export interface Config<T> {
   /**
-   * Function that gets executed on a storage error (get/set)
-   * @param error the error that occurred
+   * These keys will not get saved to storage
    */
-  error: (error: any) => void
+  excludeKeys: Array<keyof T>
 
   /**
    * Serializer for the state, by default it uses `JSON.stringify()`
@@ -24,13 +23,14 @@ export interface Config<T> {
   saveIf: (state: T) => boolean
 
   /**
-   * These keys will not get saved to storage
+   * Function that gets executed on a storage error (get/set)
+   * @param error the error that occurred
    */
-  excludeKeys: Array<keyof T>
+  error: (error: any) => void
 }
 
 export const defaultConfig: Config<any> = {
-  error: (error: any) => console.error(error),
+  excludeKeys: [],
 
   serialize: (state: any) => JSON.stringify(state),
 
@@ -38,5 +38,5 @@ export const defaultConfig: Config<any> = {
 
   saveIf: (state: any) => true,
 
-  excludeKeys: []
+  error: (error: any) => console.error(error)
 }

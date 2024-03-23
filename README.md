@@ -40,10 +40,9 @@ export const CounterStore = signalStore(
 ```ts
 export interface Config<T> {
   /**
-   * Function that gets executed on a storage error (get/set)
-   * @param error the error that occurred
+   * These keys will not get saved to storage
    */
-  error: (error: any) => void
+  excludeKeys: Array<keyof T>
 
   /**
    * Serializer for the state, by default it uses `JSON.stringify()`
@@ -64,8 +63,37 @@ export interface Config<T> {
   saveIf: (state: T) => boolean
 
   /**
-   * These keys will not get saved to storage
+   * Function that gets executed on a storage error (get/set)
+   * @param error the error that occurred
    */
-  excludeKeys: Array<keyof T>
+  error: (error: any) => void
 }
+```
+
+## Common Issues
+
+Whenever you get errors this is most likely due to serialization / deserialization of the state.
+
+Objects like `Map` and `Set` are not serializable so you might need to implement your own serialize / deserialize function.
+
+### Example (Set)
+
+Lets say you have a `Set` in your store, then you need a custom serialize / deserialize function to convert from `Set` to `Array` (serialize) and from `Array` to `Set` (deserialize)
+
+```ts
+export const MyStore = signalStore(
+  withState({
+    unique: new Set([1, 1, 3, 3])
+  }),
+  withStorage('myKey', sessionStorage, {
+    serialize: (state) => JSON.stringify({ ...state, unique: Array.from(state.unique) }),
+    deserialize: (stateString) => {
+      const state = JSON.parse(stateString)
+      return {
+        ...state,
+        unique: new Set(state.unique)
+      }
+    }
+  })
+)
 ```
