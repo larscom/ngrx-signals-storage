@@ -83,15 +83,15 @@ Lets say you have a `Set` in your store, then you need a custom serialize / dese
 ```ts
 export const MyStore = signalStore(
   withState({
-    unique: new Set([1, 1, 3, 3])
+    mySet: new Set([1, 1, 3, 3])
   }),
   withStorage('myKey', sessionStorage, {
-    serialize: (state) => JSON.stringify({ ...state, unique: Array.from(state.unique) }),
+    serialize: (state) => JSON.stringify({ ...state, mySet: Array.from(state.mySet) }),
     deserialize: (stateString) => {
       const state = JSON.parse(stateString)
       return {
         ...state,
-        unique: new Set(state.unique)
+        mySet: new Set(state.mySet)
       }
     }
   })
