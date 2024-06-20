@@ -27,10 +27,9 @@
     "url": "https://github.com/larscom/ngrx-signals-storage/issues"
   },
   "homepage": "https://github.com/larscom/ngrx-signals-storage#readme",
-  "peerDependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@ngrx/signals": "^17.0.0"
+  "peerDependencies": {    
+    "@angular/core": ">=17.0.0",
+    "@ngrx/signals": ">=17.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
