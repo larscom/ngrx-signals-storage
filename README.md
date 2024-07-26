@@ -18,7 +18,7 @@ npm install @larscom/ngrx-signals-storage
 
 ## Usage
 
-Import `withStorage` function
+Import `withStorage` function and place it after the `withState` function.
 
 ```ts
 import { withStorage } from '@larscom/ngrx-signals-storage'

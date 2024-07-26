@@ -29,7 +29,7 @@
   "homepage": "https://github.com/larscom/ngrx-signals-storage#readme",
   "peerDependencies": {    
     "@angular/core": ">=17.0.0",
-    "@ngrx/signals": ">=17.0.0"
+    "@ngrx/signals": ">=18.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

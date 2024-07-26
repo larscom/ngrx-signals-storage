@@ -1,7 +1,11 @@
 import { effect } from '@angular/core'
-
 import { getState, patchState } from '@ngrx/signals'
-import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult } from '@ngrx/signals/src/signal-store-models'
+import {
+  EmptyFeatureResult,
+  InnerSignalStore,
+  SignalStoreFeature,
+  SignalStoreFeatureResult
+} from '@ngrx/signals/src/signal-store-models'
 import { Config, defaultConfig } from './config'
 
 /**
@@ -35,12 +39,10 @@ export function withStorage<State extends SignalStoreFeatureResult>(
   let hydrated = false
 
   return (store) => {
-    if (Object.keys(store.slices).length === 0) {
-      throw Error("'withStorage' must be after 'withState'")
-    }
-
     if (storageState != null && !hydrated) {
-      const state = Object.keys(store.slices).reduce((state, key) => {
+      const stateSignals = store['stateSignals']
+      const stateSignalKeys = Object.keys(stateSignals)
+      const state = stateSignalKeys.reduce((state, key) => {
         const value = storageState[key as keyof State['state']]
         return value
           ? {

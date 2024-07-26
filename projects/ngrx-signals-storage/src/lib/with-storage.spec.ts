@@ -139,21 +139,6 @@ describe('withStorage', () => {
     expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({ count: 100 })
   })
 
-  it('should throw error if withStorage is before withState', () => {
-    const TestStore = signalStore(
-      withStorage(storageKey, new TestStorage()),
-      withState({
-        count: 0
-      })
-    )
-
-    TestBed.configureTestingModule({
-      providers: [TestStore]
-    })
-
-    expect(() => TestBed.inject(TestStore)).toThrow("'withStorage' must be after 'withState'")
-  })
-
   it('should not save to storage when saveIf returns false', () => {
     const storage = new TestStorage()
 
