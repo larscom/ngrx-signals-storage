@@ -4,7 +4,7 @@
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-signals-storage)
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-signals-storage.svg)](https://github.com/larscom/ngrx-signals-storage/blob/main/LICENSE)
 
-> Save signal state (@ngrx/signals) to localStorage/sessionStorage and restore the state on page load.
+> Save signal state (@ngrx/signals) to localStorage/sessionStorage and restore the state on page load with a single line of code.
 
 ## Installation
 
@@ -18,7 +18,7 @@ npm install @larscom/ngrx-signals-storage
 
 ## Usage
 
-Import `withStorage` function and place it after the `withState` function.
+Import `withStorage` function and place it after the `withState` function. Optional configuration can be passed as 3th argument.
 
 ```ts
 import { withStorage } from '@larscom/ngrx-signals-storage'
@@ -29,8 +29,7 @@ export const CounterStore = signalStore(
     count: 0
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
-  // optional config can be passed as 3th argument
-  withStorage('myKey', sessionStorage, { saveIf: ({ count }) => count > 0 })
+  withStorage('myKey', sessionStorage)
 )
 ```
 
@@ -69,13 +68,48 @@ export interface Config<T> {
 }
 ```
 
-## Common Issues
+## Save conditionally
+
+Sometimes you only want to save to storage on a specific condition.
+
+```ts
+import { withStorage } from '@larscom/ngrx-signals-storage'
+import { withState, signalStore } from '@ngrx/signals'
+
+export const CounterStore = signalStore(
+  withState({
+    count: 0
+  }),
+  // save only occurs when count is higher than 0
+  withStorage('myKey', sessionStorage, { saveIf: ({ count }) => count > 0 })
+)
+```
+
+## Skip properties
+
+Sometimes you want to ignore / exclude properties so they do not get saved into storage. On page reload, the initial value will be loaded instead.
+
+```ts
+import { withStorage } from '@larscom/ngrx-signals-storage'
+import { withState, signalStore } from '@ngrx/signals'
+
+export const CounterStore = signalStore(
+  withState({
+    count: 0,
+    sum: 0
+  }),
+  // sum does not get saved into sessionStorage.
+  withStorage('myKey', sessionStorage, { excludeKeys: ['sum'] })
+)
+```
+
+## Errors
 
 Whenever you get errors this is most likely due to serialization / deserialization of the state.
 
 Objects like `Map` and `Set` are not serializable so you might need to implement your own serialize / deserialize function.
 
-### Example (Set)
+### Serialize / Deserialize
 
 Lets say you have a `Set` in your store, then you need a custom serialize / deserialize function to convert from `Set` to `Array` (serialize) and from `Array` to `Set` (deserialize)
 
