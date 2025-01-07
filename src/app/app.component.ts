@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
-import { RouterOutlet } from '@angular/router'
-import { withStorage } from '@larscom/ngrx-signals-storage'
+import { getStorage, withStorage } from '@larscom/ngrx-signals-storage'
 
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
 
@@ -12,7 +11,7 @@ export const CounterStore = signalStore(
     date: new Date(),
     unique: new Set([1, 1, 3, 3])
   }),
-  withStorage('state', sessionStorage, {
+  withStorage('state', getStorage('sessionStorage'), {
     excludeKeys: ['test'],
     serialize: (state) => JSON.stringify({ ...state, unique: Array.from(state.unique) }),
     deserialize: (stateString) => {
@@ -36,7 +35,7 @@ export const CounterStore = signalStore(
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule],
   providers: [CounterStore],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

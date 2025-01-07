@@ -1,7 +1,7 @@
 {
   "name": "@larscom/ngrx-signals-storage",
   "version": "0.0.0",
-  "description": "Save signal state (@ngrx/signals) to localstorage/sessionstorage and restore the state on page load.",
+  "description": "Save signal state (@ngrx/signals) to localstorage/sessionstorage and restore the state on page load (with SSR support).",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/larscom/ngrx-signals-storage.git"

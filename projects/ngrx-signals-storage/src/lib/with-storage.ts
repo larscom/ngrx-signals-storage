@@ -11,11 +11,21 @@ import { Config, defaultConfig } from './config'
  * @param storage an implementation of the `Storage` interface, like: `sessionStorage` or `localStorage`
  *
  * @example
+ *  // for apps *without* SSR (Server Side Rendering)
  *  export const CounterStore = signalStore(
  *     withState({
  *       count: 0
  *     }),
  *     withStorage('myKey', sessionStorage)
+ *   )
+ *
+ * @example
+ *  // for apps *with* SSR (Server Side Rendering)
+ *  export const CounterStore = signalStore(
+ *     withState({
+ *       count: 0
+ *     }),
+ *     withStorage('myKey', getStorage('sessionStorage'))
  *   )
  *
  * Check out github for more information.

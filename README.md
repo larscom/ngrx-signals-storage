@@ -4,7 +4,7 @@
 ![npm](https://img.shields.io/npm/dw/@larscom/ngrx-signals-storage)
 [![license](https://img.shields.io/npm/l/@larscom/ngrx-signals-storage.svg)](https://github.com/larscom/ngrx-signals-storage/blob/main/LICENSE)
 
-> Save signal state (@ngrx/signals) to localStorage/sessionStorage and restore the state on page load with a single line of code.
+> Save signal state (@ngrx/signals) to localStorage/sessionStorage and restore the state on page load with a single line of code (with SSR support).
 
 ## Installation
 
@@ -18,7 +18,9 @@ npm install @larscom/ngrx-signals-storage
 
 ## Usage
 
-Import `withStorage` function and place it after the `withState` function. Optional configuration can be passed as 3th argument.
+### 1. Default
+
+Import the `withStorage` function and place it after the `withState` function. Optional configuration can be passed as 3th argument.
 
 ```ts
 import { withStorage } from '@larscom/ngrx-signals-storage'
@@ -30,6 +32,23 @@ export const CounterStore = signalStore(
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
   withStorage('myKey', sessionStorage)
+)
+```
+
+### 2. SSR (Server Side Rendering)
+
+Import the `withStorage` function and the `getStorage` helper function. Optional configuration can be passed as 3th argument.
+
+```ts
+import { withStorage, getStorage } from '@larscom/ngrx-signals-storage'
+import { withState, signalStore } from '@ngrx/signals'
+
+export const CounterStore = signalStore(
+  withState({
+    count: 0
+  }),
+  // state will be saved to sessionStorage under the key: 'myKey'
+  withStorage('myKey', getStorage('sessionStorage'))
 )
 ```
 
