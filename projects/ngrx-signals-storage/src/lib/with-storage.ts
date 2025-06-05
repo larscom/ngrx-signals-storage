@@ -1,6 +1,5 @@
 import { effect } from '@angular/core'
-import { getState, patchState } from '@ngrx/signals'
-import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult } from '@ngrx/signals'
+import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult, getState, patchState } from '@ngrx/signals'
 import { Config, defaultConfig } from './config'
 
 /**
