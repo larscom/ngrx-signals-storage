@@ -1,5 +1,14 @@
-import { effect } from '@angular/core'
-import { EmptyFeatureResult, SignalStoreFeature, SignalStoreFeatureResult, getState, patchState } from '@ngrx/signals'
+import { isPlatformServer } from '@angular/common'
+import { effect, inject, PLATFORM_ID } from '@angular/core'
+import {
+  EmptyFeatureResult,
+  getState,
+  patchState,
+  SignalStoreFeature,
+  signalStoreFeature,
+  SignalStoreFeatureResult,
+  withHooks
+} from '@ngrx/signals'
 import { Config, defaultConfig } from './config'
 
 /**
@@ -7,81 +16,69 @@ import { Config, defaultConfig } from './config'
  * and rehydrate the state upon page load.
  *
  * @param key the key under which the state should be saved into `Storage`
- * @param storage an implementation of the `Storage` interface, like: `sessionStorage` or `localStorage`
+ * @param storage function that returns an implementation of the `Storage` interface, like: `sessionStorage` or `localStorage`
  *
  * @example
- *  // for apps *without* SSR (Server Side Rendering)
  *  export const CounterStore = signalStore(
  *     withState({
  *       count: 0
  *     }),
- *     withStorage('myKey', sessionStorage)
+ *     withStorage('myKey', () => sessionStorage)
  *   )
- *
- * @example
- *  // for apps *with* SSR (Server Side Rendering)
- *  export const CounterStore = signalStore(
- *     withState({
- *       count: 0
- *     }),
- *     withStorage('myKey', getStorage('sessionStorage'))
- *   )
- *
- * Check out github for more information.
- * @see https://github.com/larscom/ngrx-signals-storage
  */
-export function withStorage<State extends SignalStoreFeatureResult>(
+export function withStorage<T extends SignalStoreFeatureResult>(
   key: string,
-  storage: Storage,
-  config?: Partial<Config<State['state']>>
-): SignalStoreFeature<State, EmptyFeatureResult> {
-  const cfg = { ...defaultConfig, ...config }
-
-  const item = getFromStorage(key, storage, cfg)
-  const storageState: State['state'] | null = item ? cfg.deserialize(item) : null
-
-  let hydrated = false
-
-  return (store) => {
-    if (storageState != null && !hydrated) {
-      const stateSignals = store['stateSignals']
-      const stateSignalKeys = Object.keys(stateSignals)
-      const state = stateSignalKeys.reduce((state, key) => {
-        const value = storageState[key as keyof State['state']]
-        return value
-          ? {
-              ...state,
-              [key]: value
-            }
-          : state
-      }, getState(store))
-
-      patchState(store, state)
-      hydrated = true
-    }
-
-    effect(() => {
-      const state = structuredClone(getState(store))
-      try {
-        if (cfg.saveIf(state)) {
-          cfg.excludeKeys.forEach((key) => {
-            delete state[key as keyof State['state']]
-          })
-          storage.setItem(key, cfg.serialize(state))
+  storage: () => Storage,
+  config?: Partial<Config<T['state']>>
+): SignalStoreFeature<T, EmptyFeatureResult> {
+  return signalStoreFeature(
+    withHooks({
+      onInit(store, platformId = inject(PLATFORM_ID)) {
+        if (isPlatformServer(platformId)) {
+          return
         }
-      } catch (e) {
-        cfg.error(e)
+
+        const cfg = { ...defaultConfig, ...config }
+        const item = getFromStorage(key, storage(), cfg)
+        const stateFromStorage: T['state'] | null = item ? cfg.deserialize(item) : null
+
+        if (stateFromStorage != null) {
+          const stateSignalKeys = Object.keys(store)
+          const state = stateSignalKeys.reduce((state, key) => {
+            const value = stateFromStorage[key as keyof T['state']]
+            return value
+              ? {
+                  ...state,
+                  [key]: value
+                }
+              : state
+          }, getState(store))
+
+          patchState(store, state)
+        }
+
+        effect(() => {
+          const state = structuredClone<T['state']>(getState(store))
+          try {
+            if (cfg.saveIf(state)) {
+              cfg.excludeKeys.forEach((key) => {
+                delete state[key as keyof T['state']]
+              })
+              storage().setItem(key, cfg.serialize(state))
+            }
+          } catch (e) {
+            cfg.error(e)
+          }
+        })
       }
     })
-
-    return store
-  }
+  )
 }
 
-function getFromStorage<State extends SignalStoreFeatureResult>(
+function getFromStorage<T extends SignalStoreFeatureResult>(
   key: string,
   storage: Storage,
-  cfg: Config<State>
+  cfg: Config<T>
 ): string | null {
   try {
     return storage.getItem(key)

@@ -18,8 +18,6 @@ npm install @larscom/ngrx-signals-storage
 
 ## Usage
 
-### 1. Default
-
 Import the `withStorage` function and place it after the `withState` function. Optional configuration can be passed as 3th argument.
 
 ```ts
@@ -31,24 +29,7 @@ export const CounterStore = signalStore(
     count: 0
   }),
   // state will be saved to sessionStorage under the key: 'myKey'
-  withStorage('myKey', sessionStorage)
-)
-```
-
-### 2. SSR (Server Side Rendering)
-
-Import the `withStorage` function and the `getStorage` helper function. Optional configuration can be passed as 3th argument.
-
-```ts
-import { withStorage, getStorage } from '@larscom/ngrx-signals-storage'
-import { withState, signalStore } from '@ngrx/signals'
-
-export const CounterStore = signalStore(
-  withState({
-    count: 0
-  }),
-  // state will be saved to sessionStorage under the key: 'myKey'
-  withStorage('myKey', getStorage('sessionStorage'))
+  withStorage('myKey', () => sessionStorage)
 )
 ```
 
@@ -100,7 +81,7 @@ export const CounterStore = signalStore(
     count: 0
   }),
   // save only occurs when count is higher than 0
-  withStorage('myKey', sessionStorage, { saveIf: ({ count }) => count > 0 })
+  withStorage('myKey', () => sessionStorage, { saveIf: ({ count }) => count > 0 })
 )
 ```
 
@@ -118,11 +99,11 @@ export const CounterStore = signalStore(
     sum: 0
   }),
   // sum does not get saved into sessionStorage.
-  withStorage('myKey', sessionStorage, { excludeKeys: ['sum'] })
+  withStorage('myKey', () => sessionStorage, { excludeKeys: ['sum'] })
 )
 ```
 
-## Errors
+## Common Errors
 
 Whenever you get errors this is most likely due to serialization / deserialization of the state.
 
@@ -137,7 +118,7 @@ export const MyStore = signalStore(
   withState({
     mySet: new Set([1, 1, 3, 3])
   }),
-  withStorage('myKey', sessionStorage, {
+  withStorage('myKey', () => sessionStorage, {
     serialize: (state) => JSON.stringify({ ...state, mySet: Array.from(state.mySet) }),
     deserialize: (stateString) => {
       const state = JSON.parse(stateString)

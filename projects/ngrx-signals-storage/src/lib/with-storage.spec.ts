@@ -23,7 +23,7 @@ describe('withStorage', () => {
           }
         ]
       }),
-      withStorage(storageKey, storage)
+      withStorage(storageKey, () => storage)
     )
 
     TestBed.configureTestingModule({
@@ -35,7 +35,7 @@ describe('withStorage', () => {
     expect(store.todos()).toHaveLength(2)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(storage.length).toEqual(1)
     expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({
@@ -82,7 +82,7 @@ describe('withStorage', () => {
         count: 0,
         todos: []
       }),
-      withStorage(storageKey, storage)
+      withStorage(storageKey, () => storage)
     )
 
     TestBed.configureTestingModule({
@@ -94,7 +94,7 @@ describe('withStorage', () => {
     expect(store.todos()).toHaveLength(2)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(storage.length).toEqual(1)
     expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({
@@ -122,7 +122,7 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage)
+      withStorage(storageKey, () => storage)
     )
 
     TestBed.configureTestingModule({
@@ -133,7 +133,7 @@ describe('withStorage', () => {
     expect(store.count()).toBe(100)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(storage.length).toEqual(1)
     expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({ count: 100 })
@@ -146,7 +146,7 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { saveIf: ({ count }) => count > 0 })
+      withStorage(storageKey, () => storage, { saveIf: ({ count }) => count > 0 })
     )
 
     TestBed.configureTestingModule({
@@ -157,7 +157,7 @@ describe('withStorage', () => {
     expect(store.count()).toBe(0)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(storage.length).toEqual(0)
   })
@@ -170,7 +170,7 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { serialize })
+      withStorage(storageKey, () => storage, { serialize })
     )
 
     TestBed.configureTestingModule({
@@ -181,7 +181,7 @@ describe('withStorage', () => {
     expect(store.count()).toBe(0)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(serialize).toHaveBeenCalledWith({ count: 0 })
   })
@@ -195,12 +195,15 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { deserialize })
+      withStorage(storageKey, () => storage, { deserialize })
     )
 
     TestBed.configureTestingModule({
       providers: [TestStore]
     })
+
+    const store = TestBed.inject(TestStore)
+    expect(store).toBeDefined()
 
     expect(deserialize).toHaveBeenCalledWith(JSON.stringify({ count: 100 }))
   })
@@ -217,12 +220,15 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { error })
+      withStorage(storageKey, () => storage, { error })
     )
 
     TestBed.configureTestingModule({
       providers: [TestStore]
     })
+
+    const store = TestBed.inject(TestStore)
+    expect(store).toBeDefined()
 
     expect(error).toHaveBeenCalledWith(Error('storage error'))
   })
@@ -239,7 +245,7 @@ describe('withStorage', () => {
       withState({
         count: 0
       }),
-      withStorage(storageKey, storage, { error })
+      withStorage(storageKey, () => storage, { error })
     )
 
     TestBed.configureTestingModule({
@@ -250,7 +256,7 @@ describe('withStorage', () => {
     expect(store.count()).toBe(0)
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(error).toHaveBeenCalledWith(Error('storage error'))
   })
@@ -264,7 +270,7 @@ describe('withStorage', () => {
         excludeMe: 1,
         skipMe: 'test'
       }),
-      withStorage(storageKey, storage, { excludeKeys: ['excludeMe', 'skipMe'] })
+      withStorage(storageKey, () => storage, { excludeKeys: ['excludeMe', 'skipMe'] })
     )
 
     TestBed.configureTestingModule({
@@ -277,7 +283,7 @@ describe('withStorage', () => {
     expect(store.skipMe()).toBe('test')
 
     // trigger effect()
-    TestBed.flushEffects()
+    TestBed.tick()
 
     expect(storage.length).toEqual(1)
     expect(JSON.parse(storage.getItem(storageKey)!)).toEqual({ count: 100 })
