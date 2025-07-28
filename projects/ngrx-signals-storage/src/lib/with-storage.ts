@@ -58,11 +58,11 @@ export function withStorage<T extends SignalStoreFeatureResult>(
         }
 
         effect(() => {
-          const state = structuredClone<T['state']>(getState(store))
+          const state = structuredClone<object>(getState(store))
           try {
             if (cfg.saveIf(state)) {
               cfg.excludeKeys.forEach((key) => {
-                delete state[key as keyof T['state']]
+                delete state[key as keyof object]
               })
               storage().setItem(key, cfg.serialize(state))
             }
