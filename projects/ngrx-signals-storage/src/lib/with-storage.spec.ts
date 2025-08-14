@@ -114,6 +114,44 @@ describe('withStorage', () => {
     })
   })
 
+  it('should rehydrate boolean values from storage correctly', () => {
+    const storage = new TestStorage()
+    storage.setItem(storageKey, JSON.stringify({ playing: false }))
+
+    const TestStore = signalStore(
+      withState({
+        playing: true
+      }),
+      withStorage(storageKey, () => storage)
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.playing()).toBe(false)
+  })
+
+  it('should rehydrate array values from storage correctly', () => {
+    const storage = new TestStorage()
+    storage.setItem(storageKey, JSON.stringify({ items: [] }))
+
+    const TestStore = signalStore(
+      withState({
+        items: [1, 2, 3]
+      }),
+      withStorage(storageKey, () => storage)
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.items()).toHaveLength(0)
+  })
+
   it('should ignore properties from storage if not exist on state', () => {
     const storage = new TestStorage()
     storage.setItem(storageKey, JSON.stringify({ count: 100, a: true, b: 0 }))

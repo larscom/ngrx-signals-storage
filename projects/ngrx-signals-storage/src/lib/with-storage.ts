@@ -46,7 +46,7 @@ export function withStorage<T extends SignalStoreFeatureResult>(
           const stateSignalKeys = Object.keys(store)
           const state = stateSignalKeys.reduce((state, key) => {
             const value = stateFromStorage[key as keyof T['state']]
-            return value
+            return value !== undefined
               ? {
                   ...state,
                   [key]: value
