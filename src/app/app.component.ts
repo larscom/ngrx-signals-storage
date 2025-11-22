@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, inject } from '@angular/core'
 import { withStorage } from '@larscom/ngrx-signals-storage'
-
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
 
 export const CounterStore = signalStore(
@@ -35,7 +34,7 @@ export const CounterStore = signalStore(
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   providers: [CounterStore],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
