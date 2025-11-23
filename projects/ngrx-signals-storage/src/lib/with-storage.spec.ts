@@ -203,7 +203,7 @@ describe('withStorage', () => {
   it('should call provided serialize func', () => {
     const storage = new TestStorage()
 
-    const serialize = jest.fn()
+    const serialize = vitest.fn()
     const TestStore = signalStore(
       withState({
         count: 0
@@ -228,7 +228,7 @@ describe('withStorage', () => {
     const storage = new TestStorage()
     storage.setItem(storageKey, JSON.stringify({ count: 100 }))
 
-    const deserialize = jest.fn()
+    const deserialize = vitest.fn()
     const TestStore = signalStore(
       withState({
         count: 0
@@ -249,11 +249,11 @@ describe('withStorage', () => {
   it('should call provided error func on getItem', () => {
     const storage = new TestStorage()
 
-    jest.spyOn(storage, 'getItem').mockImplementation(() => {
+    vitest.spyOn(storage, 'getItem').mockImplementation(() => {
       throw Error('storage error')
     })
 
-    const error = jest.fn()
+    const error = vitest.fn()
     const TestStore = signalStore(
       withState({
         count: 0
@@ -274,11 +274,11 @@ describe('withStorage', () => {
   it('should call provided error func on setItem', () => {
     const storage = new TestStorage()
 
-    jest.spyOn(storage, 'setItem').mockImplementation(() => {
+    vitest.spyOn(storage, 'setItem').mockImplementation(() => {
       throw Error('storage error')
     })
 
-    const error = jest.fn()
+    const error = vitest.fn()
     const TestStore = signalStore(
       withState({
         count: 0
