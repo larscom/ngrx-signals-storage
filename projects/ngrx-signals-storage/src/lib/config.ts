@@ -23,6 +23,12 @@ export interface Config<T> {
   saveIf: (state: T) => boolean
 
   /**
+   * Removes the state from storage when this function returns true
+   * @param state the last state known
+   */
+  removeIf: (state: T) => boolean
+
+  /**
    * Function that gets executed on a storage error (get/set)
    * @param error the error that occurred
    */
@@ -37,6 +43,8 @@ export const defaultConfig: Config<any> = {
   deserialize: (state: string) => JSON.parse(state),
 
   saveIf: (state: any) => true,
+
+  removeIf: (state: any) => false,
 
   error: (error: any) => console.error(error)
 }

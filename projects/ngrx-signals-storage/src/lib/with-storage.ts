@@ -60,7 +60,9 @@ export function withStorage<T extends SignalStoreFeatureResult>(
         effect(() => {
           const state = structuredClone<object>(getState(store))
           try {
-            if (cfg.saveIf(state)) {
+            if (cfg.removeIf(state)) {
+              storage().removeItem(key)
+            } else if (cfg.saveIf(state)) {
               cfg.excludeKeys.forEach((key) => {
                 delete state[key as keyof object]
               })

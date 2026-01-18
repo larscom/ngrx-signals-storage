@@ -1,4 +1,3 @@
-
 import { Component, inject } from '@angular/core'
 import { withStorage } from '@larscom/ngrx-signals-storage'
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
@@ -12,6 +11,7 @@ export const CounterStore = signalStore(
   }),
   withStorage('state', () => sessionStorage, {
     excludeKeys: ['test'],
+    removeIf: ({ count }) => count > 500,
     serialize: (state) => JSON.stringify({ ...state, unique: Array.from(state.unique) }),
     deserialize: (stateString) => {
       const state = JSON.parse(stateString)
