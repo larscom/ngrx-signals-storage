@@ -103,7 +103,7 @@ export const CounterStore = signalStore(
   withState({
     count: 0
   }),
-  // state gets removed from storage when count > 5
+  // state gets removed from storage when count is higher than 5
   withStorage('myKey', () => sessionStorage, { removeIf: ({ count }) => count > 5 })
 )
 ```
