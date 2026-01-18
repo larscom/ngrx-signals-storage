@@ -61,6 +61,12 @@ export interface Config<T> {
   saveIf: (state: T) => boolean
 
   /**
+   * Removes the state from storage when this function returns true
+   * @param state the last state known
+   */
+  removeIf: (state: T) => boolean
+
+  /**
    * Function that gets executed on a storage error (get/set)
    * @param error the error that occurred
    */
@@ -82,6 +88,23 @@ export const CounterStore = signalStore(
   }),
   // save only occurs when count is higher than 0
   withStorage('myKey', () => sessionStorage, { saveIf: ({ count }) => count > 0 })
+)
+```
+
+## Remove conditionally
+
+You might want to remove the state from storage on a specific condition.
+
+```ts
+import { withStorage } from '@larscom/ngrx-signals-storage'
+import { withState, signalStore } from '@ngrx/signals'
+
+export const CounterStore = signalStore(
+  withState({
+    count: 0
+  }),
+  // state gets removed from storage when count > 5
+  withStorage('myKey', () => sessionStorage, { removeIf: ({ count }) => count > 5 })
 )
 ```
 

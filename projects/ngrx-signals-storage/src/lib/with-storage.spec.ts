@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing'
-import { signalStore, withState } from '@ngrx/signals'
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals'
 import { withStorage } from './with-storage'
 
 const storageKey = 'key'
@@ -197,6 +197,42 @@ describe('withStorage', () => {
     // trigger effect()
     TestBed.tick()
 
+    expect(storage.length).toEqual(0)
+  })
+
+  it('should remove from storage when removeIf returns true', () => {
+    const storage = new TestStorage()
+
+    const TestStore = signalStore(
+      withState({
+        count: 0
+      }),
+      withStorage(storageKey, () => storage, { removeIf: ({ count }) => count > 5 }),
+      withMethods(({ count, ...store }) => ({
+        increment(by: number) {
+          patchState(store, { count: count() + by })
+        }
+      }))
+    )
+
+    TestBed.configureTestingModule({
+      providers: [TestStore]
+    })
+
+    const store = TestBed.inject(TestStore)
+    expect(store.count()).toBe(0)
+
+    // trigger effect()
+    TestBed.tick()
+
+    expect(storage.length).toEqual(1)
+
+    store.increment(6)
+
+    // trigger effect()
+    TestBed.tick()
+
+    expect(store.count()).toBe(6)
     expect(storage.length).toEqual(0)
   })
 
